@@ -1,7 +1,11 @@
 # internship_project
+
 Health vitals monitering system
+
 Group members: Claren, Chirag, Karthik, Rickson
+
 Aim: To monitor vitals of a human 
+
 Components required:
 1) gy-max30100 
 2) DHT 11 
