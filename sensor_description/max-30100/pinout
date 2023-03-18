@@ -1,0 +1,5 @@
+VIN is the power pin. 
+You can connect it to 3.3V or 5V output from your Arduino. 
+SCL is the I2C clock pin, connect to your Arduino's I2C clock line. 
+SDA is the I2C data pin, connect to your Arduino's I2C data line. 
+INT The MAX30100 can be programmed to generate an interrupt for each pulse.
