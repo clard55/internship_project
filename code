@@ -1,0 +1,81 @@
+#include <Adafruit_Sensor.h>
+#include <DHT.h>
+#include <Wire.h>
+#include "MAX30100_PulseOximeter.h"
+
+#define DHTPIN 15
+#define DHTTYPE DHT11
+
+DHT dht(DHTPIN, DHTTYPE);
+PulseOximeter pox ;
+
+#define GREEN_LED 5
+#define BLUE_LED 7
+#define RED_LED 6
+#define BUZZER 10
+
+void onBeatDetected()
+{
+    Serial.println("Beat!");
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(GREEN_LED, OUTPUT);
+  pinMode(BLUE_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT);
+  pinMode(BUZZER, OUTPUT);
+
+  dht.begin();
+     pox.setIRLedCurrent(MAX30100_LED_CURR_7_6MA);
+    pox.setOnBeatDetectedCallback(onBeatDetected);
+}
+
+void loop() {
+  float temperature = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  int heartRate = 0;
+  float oxygenLevel = 0;
+
+  pox.update();
+
+  if (pox.getSpO2() > 0) {
+    heartRate = pox.getSpO2();
+  }
+
+  if (pox.getSpO2() > 0) {
+    oxygenLevel = pox.getSpO2();
+  }
+
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.print(" *C, Humidity: ");
+  Serial.print(humidity);
+  Serial.print(" %, Heart rate: ");
+  Serial.print(heartRate);
+  Serial.print(" bpm, Oxygen level: ");
+  Serial.print(oxygenLevel);
+  Serial.println(" %");
+
+  digitalWrite(GREEN_LED, LOW);
+  digitalWrite(BLUE_LED, LOW);
+  digitalWrite(RED_LED, LOW);
+  digitalWrite(BUZZER, LOW);
+
+  if (temperature >= 30.0 && temperature <= 37.0) {
+    digitalWrite(BLUE_LED, HIGH);
+  } else {
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(BUZZER, HIGH);
+  }
+
+  if (heartRate >= 60 && heartRate <= 100 && oxygenLevel >= 92) {
+    digitalWrite(GREEN_LED, HIGH);
+  } else {
+    digitalWrite(RED_LED, HIGH);
+    digitalWrite(BUZZER, HIGH);
+  }
+
+  delay(2000);
+}
